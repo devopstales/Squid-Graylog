@@ -82,3 +82,41 @@ Source of the rule that makes the adjustment of the timestamp that we are going 
 Add the existing pipeline to the squid stream by clicking the Edit connections at Pipeline connections.
 
 ![alt text](https://devopstales.github.io/img/include/squid_pfsense8.png)
+
+# Confifure pfsense
+```
+# http://pkg.freebsd.org/FreeBSD:11:amd64/latest/All/
+pkg add http://pkg.freebsd.org/FreeBSD:11:amd64/latest/All/beats-6.7.1.txz
+
+nano /usr/local/etc/filebeat.yml
+filebeat.prospectors:
+- input_type: log
+  document_type: squid3
+  paths:
+    - /var/squid/logs/access.log
+
+output.logstash:
+  # The Logstash hosts
+  hosts: ["192.168.0.112:5044"]
+
+  # Optional SSL. By default is off.
+  # List of root certificates for HTTPS server verifications
+  bulk_max_size: 2048
+ #ssl.certificate_authorities: ["/etc/filebeat/logstash.crt"]
+  template.name: "filebeat"
+  template.path: "filebeat.template.json"
+  template.overwrite: false
+  # Certificate for SSL client authentication
+  #ssl.certificate: "/etc/pki/client/cert.pem"
+
+  # Client Certificate Key
+  #ssl.key: "/etc/pki/client/cert.key"
+
+/usr/local/sbin/filebeat -c /usr/local/etc/filebeat.yml test config
+cp /usr/local/etc/rc.d/filebeat /usr/local/etc/rc.d/filebeat.sh
+echo "filebeat_enable=yes" >> /etc/rc.conf.local
+echo "filebeat_conf=/usr/local/etc/filebeat.yml" >> /etc/rc.conf.local
+
+/usr/local/etc/rc.d/filebeat.sh start
+ps aux | grep beat
+```
