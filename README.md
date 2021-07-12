@@ -83,10 +83,10 @@ Add the existing pipeline to the squid stream by clicking the Edit connections a
 
 ![alt text](https://devopstales.github.io/img/include/squid_pfsense8.png)
 
-# Confifure pfsense
+# Configure pfsense
 ```
 # http://pkg.freebsd.org/FreeBSD:11:amd64/latest/All/
-pkg add http://pkg.freebsd.org/FreeBSD:11:amd64/latest/All/beats-6.7.1.txz
+pkg add https://pkg.freebsd.org/FreeBSD:12:amd64/quarterly/All/beats6-6.8.16.txz
 
 nano /usr/local/etc/filebeat.yml
 filebeat.prospectors:
